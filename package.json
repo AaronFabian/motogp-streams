@@ -1,24 +1,42 @@
 {
-  "name": "motogp_frontend",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "react": "^18",
-    "react-dom": "^18",
-    "next": "14.2.4"
-  },
-  "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.4"
-  }
+	"name": "motogp_frontend",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint",
+		"docker-compose-up": "docker compose up",
+		"dev:custom": "node ./lib/server.ts"
+	},
+	"dependencies": {
+		"@heroicons/react": "^2.1.4",
+		"@types/bcrypt": "^5.0.2",
+		"@types/jsonwebtoken": "^9.0.6",
+		"bcrypt": "^5.1.1",
+		"js-cookie": "^3.0.5",
+		"jsonwebtoken": "^9.0.2",
+		"mysql": "^2.18.1",
+		"next": "14.2.4",
+		"next-auth": "^5.0.0-beta.19",
+		"react": "^18",
+		"react-dom": "^18",
+		"react-hot-toast": "^2.4.1",
+		"tailwind-merge": "^2.3.0",
+		"tailwindcss-animate": "^1.0.7"
+	},
+	"devDependencies": {
+		"@types/js-cookie": "^3.0.6",
+		"@types/mysql": "^2.15.26",
+		"@types/node": "^20",
+		"@types/react": "^18",
+		"@types/react-dom": "^18",
+		"autoprefixer": "^10.4.19",
+		"eslint": "^8",
+		"eslint-config-next": "14.2.4",
+		"postcss": "^8.4.39",
+		"tailwindcss": "^3.4.4",
+		"typescript": "^5"
+	}
 }
