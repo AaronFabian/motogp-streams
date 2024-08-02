@@ -14,20 +14,22 @@ const connection: mysql.Connection = mysql.createConnection({
 	database: 'motogp_streams',
 });
 
-// const connection = mysql.createConnection({
-// 	host: 'localhost',
-// 	user: 'root',
-// 	port: 3308,
-// 	password: 'my-secret-pw',
-// 	database: 'motogp_streams',
-// });
-
-// connection.connect(err => {
-// 	if (err) {
-// 		console.error('Error connecting to the database:', err.stack);
-// 		return;
-// 	}
-// 	console.log('Connected to the database as id ' + connection.threadId);
-// });
-
 export { connection };
+
+/*
+	const connection = mysql.createConnection({
+		host: 'localhost',
+		user: 'root',
+		port: 3308,
+		password: 'my-secret-pw',
+		database: 'motogp_streams',
+	});
+
+	connection.connect(err => {
+		if (err) {
+			console.error('Error connecting to the database:', err.stack);
+			return;
+		}
+		console.log('Connected to the database as id ' + connection.threadId);
+	});
+*/

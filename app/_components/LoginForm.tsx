@@ -1,13 +1,11 @@
 'use client';
 
 import { signInAction } from '@/lib/action';
-import { useUser } from '@/app/_providers/UserContext.tsx';
-import { useState } from 'react';
 import Image from 'next/image';
+import { useState } from 'react';
 import MotoGPStreamsIcon from './MotoGPStreamsIcon.tsx';
 
 export default function LoginForm() {
-	const { handleSetUser } = useUser();
 	const [disableBtn, setDisableBtn] = useState(false);
 
 	return (

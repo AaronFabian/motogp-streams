@@ -38,7 +38,9 @@ export interface IncomingAlert {
 }
 
 export async function getTodayStreams(): Promise<MotoGPTodayStream[]> {
-	// get any date from any country
+	// get any date from server country
+	// current server country will be depend on the instance
+	// but for now will be Asia/Japan/Tokyo
 	const currentDate = new Date();
 
 	// convert them into japan date
@@ -100,17 +102,6 @@ export async function getIncomingAlerts(userId: number): Promise<IncomingAlert[]
 	return userIncomingAlerts;
 }
 
-export async function getUser(email: string, password: string) {
-	const query = 'CALL get_user_by_email(?);';
-	// await connQuery(query);
-
-	return {
-		username: 'Aaron Fabian',
-		email: 'aaronfabian78@gmail.com',
-		pictureUrl: null,
-	};
-}
-
 export async function getUserByEmail(email: string) {
 	const query = 'CALL get_user_by_email(?)';
 	const [users] = await connQuery(query, [email]);
@@ -126,5 +117,71 @@ export async function createUserUsingGoogle(email: string, username: string) {
 	} catch (error) {
 		console.error('Fatal Error: Something went wrong when creating user using Google !', error);
 		throw new Error('Fatal Error: Something went wrong when creating user using Google !');
+	}
+}
+
+export async function getSchedulePerMonth(month: number) {
+	try {
+	} catch (error) {
+		console.error('FATAL_ERROR getSchedulePerMonth', error);
+		return null;
+	}
+}
+
+export async function getAllMotoGPMonth() {
+	try {
+		const query =
+			'SELECT month, calendars.order FROM calendars WHERE calendars.year = 2024 GROUP BY month, calendars.order;';
+		const result = await connQuery(query, []);
+
+		return result;
+	} catch (error) {
+		console.error('FATAL_ERROR getAllMotoGPMonth', error);
+		return null;
+	}
+}
+
+export async function getSchedulesInMonth(year: number, month: number, order: number) {
+	try {
+		const query = 'CALL get_schedules_in_month(?, ?, ?)';
+		const result = await connQuery(query, [year, month, order]);
+
+		return result;
+	} catch (error) {
+		return null;
+	}
+}
+
+export async function getSchedulesPerDay(year: number, month: number, day: number, order: number, userId: number) {
+	try {
+		const query = 'CALL get_schedules_per_day(?, ?, ?, ?, ?)';
+		const result = await connQuery(query, [year, month, day, order, userId]);
+
+		return result;
+	} catch (error) {
+		return null;
+	}
+}
+
+export interface DataCount {
+	schedules: number;
+	calendars: number;
+	circuits: number;
+}
+
+export async function getDataCount(): Promise<DataCount | null> {
+	try {
+		const query = 'SELECT * FROM v_data_count';
+		const result = (await connQuery(query, [])) as any[];
+
+		const iData: DataCount = {
+			calendars: 0,
+			circuits: 0,
+			schedules: 0,
+		};
+
+		return result.reduce((prev: any, curr: any) => ({ ...prev, [curr.table_name]: curr.total }), iData);
+	} catch (error) {
+		return null;
 	}
 }

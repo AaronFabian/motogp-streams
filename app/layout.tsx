@@ -8,6 +8,7 @@ import '@/app/_styles/globals.css';
 import { UserProvider } from './_providers/UserContext.tsx';
 import { Toaster } from 'react-hot-toast';
 import { auth } from '@/lib/auth.js';
+import Footer from './_components/Footer.tsx';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -29,7 +30,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 			<body className={`${inter.className} dark:bg-primary-black-500 dark:text-primary-white-500`}>
 				<Navbar user={session?.user ?? null} />
 				<SideNav />
-				<UserProvider>{children}</UserProvider>
+				<UserProvider userData={session?.user ?? null}>{children}</UserProvider>
+				<Footer />
 				<Toaster />
 			</body>
 		</html>

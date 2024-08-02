@@ -79,7 +79,7 @@ function Card({
 	time: string;
 	alertMeAt: string;
 }) {
-	console.log(alertMeAt);
+	// console.log(alertMeAt);
 	return (
 		<div className="w-full h-[90px] px-6 py-3 bg-primary-black-500 rounded-xl grid grid-cols-5 grid-rows-3 gap-y-2">
 			<p className="text-sm col-span-4">
@@ -105,7 +105,23 @@ function Card({
 					<option className="bg-primary-gray-500" value="null">
 						Unset
 					</option>
-					{/* <option className="bg-primary-gray-500" value="5-min">
+					<option className="bg-primary-gray-500" value="1-day">
+						1 day before
+					</option>
+					<option className="bg-primary-gray-500" value="2-day">
+						2 day before
+					</option>
+					<option className="bg-primary-gray-500" value="1-week">
+						1 week before
+					</option>
+				</select>
+			</div>
+		</div>
+	);
+}
+
+{
+	/* <option className="bg-primary-gray-500" value="5-min">
 						5 min before
 					</option>
 					<option className="bg-primary-gray-500" value="10-min">
@@ -122,18 +138,5 @@ function Card({
 					</option>
 					<option className="bg-primary-gray-500" value="12-hour">
 						12 hours before
-					</option> */}
-					<option className="bg-primary-gray-500" value="1-day">
-						1 day before
-					</option>
-					<option className="bg-primary-gray-500" value="2-day">
-						2 day before
-					</option>
-					<option className="bg-primary-gray-500" value="1-week">
-						1 week before
-					</option>
-				</select>
-			</div>
-		</div>
-	);
+					</option> */
 }
