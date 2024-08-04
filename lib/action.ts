@@ -1,6 +1,69 @@
 'use server';
 
-import { signIn } from '@/lib/auth';
+import { auth, signIn } from '@/lib/auth';
+import { registerIncomingMessage, unregisterIncomingMessage, updateIncomingMessage } from './data-service.ts';
+import { revalidatePath } from 'next/cache';
+
+export async function signInAction() {
+	await signIn('google', { redirectTo: '/account' });
+}
+
+export async function registerAlert(ids: any, alertDate: Date, eventDate: Date, alertEnum: string, title: string) {
+	const session = await auth();
+	if (!session?.user) return ['ERROR', null];
+
+	if ((session.user as any).lineUUID === null) return ['LINE_REQUIRED', null];
+
+	ids.userId = session.user.id;
+	ids.userLineUUID = (session.user as any).lineUUID;
+
+	// user id,
+	// schedule id
+	// event id
+	// schedule id
+	// circuit id
+	const registerMsg = `[EVENT ALERT]
+Hello ${session.user.name}!
+The event that you have been awaiting is incoming in ${alertEnum}. 
+Don't forget to watch your favorite race!
+
+-- Title
+${title}
+
+-- Event Date
+${eventDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: '2-digit', weekday: 'long' })}
+
+Visit: ${process.env.NEXT_PUBLIC_URL}
+`;
+
+	const insertedId = await registerIncomingMessage(ids, alertDate, alertEnum, registerMsg, eventDate);
+	if (insertedId === null) return ['ERROR_WHILE_REGISTER_MESSAGE', null];
+
+	return ['SUCCESS', insertedId];
+}
+
+export async function unregisterAlert(alertId: number): Promise<boolean> {
+	const session = await auth();
+
+	// for security we add to parameter user line ID
+	const userLineUUID = (session!.user as any).lineUUID;
+	const userId = Number(session!.user!.id);
+
+	const result = await unregisterIncomingMessage(userId, userLineUUID, alertId);
+	if (!result) return false;
+
+	return true;
+}
+
+export async function updateAlert(incomingMessageId: number, alertEnum: string): Promise<boolean> {
+	const session = await auth();
+
+	// for security we add to parameter user line ID
+	const userLineUUID = (session!.user as any).lineUUID;
+	const userId = Number(session!.user!.id);
+
+	return await updateIncomingMessage(userId, userLineUUID, incomingMessageId, alertEnum);
+}
 
 // export async function loginUser(formData: FormData) {
 // 	// 00 retrieve data from the user
@@ -41,7 +104,3 @@ import { signIn } from '@/lib/auth';
 // 		return { status: 'fail', message: (error as Error).message };
 // 	}
 // }
-
-export async function signInAction() {
-	await signIn('google', { redirectTo: '/account' });
-}

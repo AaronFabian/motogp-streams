@@ -9,7 +9,6 @@ export default function AccountProfilePanel({ user }: { user: User }) {
 	const [username, setUsername] = useState((user as any).name);
 	const [email, setEmail] = useState((user as any).email);
 
-	console.log(user.image);
 	return (
 		<div className="p-2 w-full min-h-24 bg-primary-gray-500 rounded-2xl mt-4">
 			<h2 className="text-center text-2xl">Profile</h2>

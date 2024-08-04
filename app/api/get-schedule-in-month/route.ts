@@ -12,6 +12,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
 		// sqlPacket: data[1]
 		return NextResponse.json({ status: 'success', data: data[0] }, { status: 200 });
 	} catch (error) {
+		console.error(error);
 		return NextResponse.json({ status: 'fail', message: (error as Error).message }, { status: 400 });
 	}
 }

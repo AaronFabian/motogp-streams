@@ -1,6 +1,5 @@
 import { auth } from '@/lib/auth.js';
 import { getIncomingAlerts } from '@/lib/data-service.ts';
-import { timeDifferent } from '@/lib/utils.ts';
 import {
 	ArrowRightEndOnRectangleIcon,
 	BellAlertIcon,
@@ -8,14 +7,13 @@ import {
 	ChevronRightIcon,
 	XCircleIcon,
 } from '@heroicons/react/24/outline';
+
 import Link from 'next/link';
 
 export interface Calendar {
 	year: number;
 	month: number;
 	day: number;
-	dayName: string;
-	monthName: string;
 }
 
 export default async function AccountIncomingAlertList() {
@@ -29,13 +27,10 @@ export default async function AccountIncomingAlertList() {
 				<div className="flex flex-col gap-2 max-h-[460px]">
 					{incomingAlertList.map((alert, i) => (
 						<Card
-							alertMeAt={`${Math.abs(
-								timeDifferent(
-									alert.sendAt,
-									new Date(`${alert.calendar.year}-${alert.calendar.month}-${alert.calendar.day} 00:00:00`)
-								)
-							)}-day`}
+							alertMeAt={'1-day'}
 							key={i}
+							title={alert.title}
+							circuitName={alert.circuitName}
 							calendar={alert.calendar}
 							category={alert.category}
 							categoryName={alert.categoryName}
@@ -71,26 +66,33 @@ function Card({
 	categoryName,
 	calendar,
 	time,
+	circuitName,
+	title,
 	alertMeAt,
 }: {
 	category: string;
 	categoryName: string;
 	calendar: Calendar;
 	time: string;
+	circuitName: string;
+	title: string;
 	alertMeAt: string;
 }) {
-	// console.log(alertMeAt);
+	// const prevMonthDateEnd = new Date(year, month - 1 + 1, 0).toLocaleDateString('en-US', { day: 'numeric' });
+	const date = new Date(calendar.year, calendar.month - 1, calendar.day);
+
 	return (
-		<div className="w-full h-[90px] px-6 py-3 bg-primary-black-500 rounded-xl grid grid-cols-5 grid-rows-3 gap-y-2">
-			<p className="text-sm col-span-4">
-				{category} {categoryName}
-			</p>
+		<div className="w-full h-[130px] px-6 py-3 bg-primary-black-500 rounded-xl grid grid-cols-5 grid-rows-3 gap-y-2">
+			<p className="text-sm col-span-4 truncate">{title}</p>
 			<div className="flex gap-4 justify-end">
 				<BellAlertIcon width={20} height={20} className="self-center justify-self-end hover:cursor-pointer" />
 				<XCircleIcon width={20} height={20} className="self-center justify-self-end stroke-alert" />
 			</div>
+			<p className="text-sm col-span-3 truncate">
+				{category} {categoryName}
+			</p>
 			<p className="text-sm col-span-3">
-				{calendar.dayName}, {calendar.day} {calendar.monthName} {calendar.year}
+				{date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit', weekday: 'short' })}
 			</p>
 			<p className="text-sm col-span-2 justify-self-end">{time}</p>
 			<label htmlFor="alert_option" className="text-sm col-span-2">

@@ -1,12 +1,12 @@
 'use client';
 
-import { BellAlertIcon, ChevronDownIcon, ClockIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
+import { useUser } from '@/app/_providers/UserContext.tsx';
+import { registerAlert, unregisterAlert, updateAlert } from '@/lib/action.ts';
+import { BellAlertIcon, ChevronDownIcon, ClockIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
+import DayPicker from '@/app/_components/DayPicker.tsx';
+import LineAlertButton from '@/app/_components/LineAlertButton.tsx';
 import toast from 'react-hot-toast';
-import DayPicker from './DayPicker.tsx';
-import Image from 'next/image';
-import LineAlertButton from './LineAlertButton.tsx';
-import { useUser } from '../_providers/UserContext.tsx';
 
 export default function SchedulesAccordion({
 	classList = '',
@@ -21,6 +21,7 @@ export default function SchedulesAccordion({
 	month: number;
 	order: number;
 }) {
+	// TODO: refactoring into useReducer();
 	const [state, setState] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [firstTimeOpen, setFirstTimeOpen] = useState(true);
@@ -151,7 +152,7 @@ function Card({ schedule }: { schedule: any }) {
 	const category: string = schedule.title;
 	const categoryName: string = schedule.category_name;
 	const year: number = schedule.year;
-	const month: string = schedule.month;
+	const month: number = schedule.month;
 	const day: number = schedule.day;
 	const time: string = schedule.time;
 	const status: string = schedule.status;
@@ -159,9 +160,88 @@ function Card({ schedule }: { schedule: any }) {
 	const title: string = schedule.title;
 	const circuitName: string = schedule.circuit_name;
 	const flagSrc: string = schedule.flag_src;
-	const alertId: number = schedule.alert_id;
 	const alertMeBefore: string = schedule.alert_me_before;
 	const alertMessage: string = schedule.alert_message;
+
+	const alertId: number = schedule.alert_id; // alerts_id
+	const circuitId: number = schedule.circuits_id;
+	const scheduleId: number = schedule.schedules_id;
+	const calendarId: number = schedule.calendars_id;
+	const eventId: number = schedule.events_id;
+
+	const { user } = useUser();
+	const [incomingMessageId, setIncomingMessageId] = useState<number | null>(alertId);
+	const [loading, setLoading] = useState(false);
+
+	async function handleSetAlert(alertEnum: string) {
+		// Do not proceed if user not defined
+		if (!user) return toast('Please login to use this feature !');
+
+		// Do not proceed if this card is sending/loading
+		if (loading) return toast.error('Please wait and try again');
+		setLoading(true);
+
+		// 01 Collect all the data, because this card already unique we don't need some data
+		const ids = { incomingMessageId, circuitId, scheduleId, calendarId, eventId };
+
+		// 02 split the selected interval/enum
+		const minusDay = alertEnum.split('-')[0]; // ex data '1-day'
+
+		// 03 if user choose to unset the alarm
+		if (minusDay === 'null') {
+			// 03.5 IF user unregister the alert then they should be an incoming_message.ID;
+			const status = await unregisterAlert(incomingMessageId!);
+			if (!status) return toast.error('Something gone wrong while deleting alert !');
+
+			setLoading(false);
+			setIncomingMessageId(null);
+			toast.success('Unset alert success !');
+			return;
+		}
+
+		const eventDate = new Date(year, month, day);
+
+		// 04 If the user update the alert
+		// this code belows mean updating
+		if (incomingMessageId !== null) {
+			const status = await updateAlert(incomingMessageId!, alertEnum);
+			if (!status) {
+				toast.error('Something went wrong please try again !');
+				setLoading(false);
+				return;
+			}
+
+			setLoading(false);
+			toast.success('Success updating alert!');
+			return;
+		}
+
+		// 05 If the user add new alert
+		const dateTime = new Date(year, month, day - Number(minusDay));
+		const [result, insertedId] = await registerAlert(ids, dateTime, eventDate, alertEnum, schedule.title);
+
+		if (result === 'ERROR') {
+			setLoading(false);
+			toast.error('Failed to add new alert !');
+			return;
+		}
+
+		if (result === 'ERROR_WHILE_REGISTER_MESSAGE') {
+			setLoading(false);
+			toast.error('Failed while adding alert');
+			return;
+		}
+
+		if (result === 'LINE_REQUIRED') {
+			setLoading(false);
+			toast.error('Oops! please register the your Line at account page');
+			return;
+		}
+
+		setLoading(false);
+		setIncomingMessageId(insertedId as number);
+		toast.success(`Success add new alert !`);
+	}
 
 	return (
 		<div className="w-full h-[96px] px-6 py-3 bg-primary-gray-800 rounded-xl grid grid-cols-5 grid-rows-3 gap-y-2">
@@ -173,7 +253,9 @@ function Card({ schedule }: { schedule: any }) {
 				<BellAlertIcon
 					width={20}
 					height={20}
-					className={`self-center justify-self-end hover:cursor-pointer ${alertId && 'text-primary-gold-500'}`}
+					className={`self-center justify-self-end hover:cursor-pointer ${
+						incomingMessageId && 'text-primary-gold-500'
+					}`}
 				/>
 			</div>
 
@@ -195,7 +277,8 @@ function Card({ schedule }: { schedule: any }) {
 				alertId={alertId}
 				alertMeBefore={alertMeBefore}
 				alertMessage={alertMessage}
-				handleSetAlert={() => {}}
+				handleSetAlert={handleSetAlert}
+				disabled={loading}
 			/>
 		</div>
 	);

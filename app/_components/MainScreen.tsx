@@ -1,8 +1,13 @@
+import fs from 'fs';
+import CustomIframe from './CustomIframe.tsx';
+
 export default function MainScreen() {
+	const file = fs.readFileSync('iframe-data.json', 'utf-8');
+	const iframeData = JSON.parse(file);
+
 	return (
 		<div className="p-2">
-			{/* del soon */}
-			<div className="h-[192px] w-full bg-primary-gray-500"></div>
+			<CustomIframe iframeData={iframeData} />
 			{/* <iframe
 				src="https://embedstreams.me/fim-moto-gp/motogp-dutch-gp-moto3-fp1-stream-1"
 				width="100%"

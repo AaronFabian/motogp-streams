@@ -12,7 +12,7 @@ export function convertTimeToLocale(serverTime: Date): string {
 		hourCycle: 'h24',
 		hour: '2-digit',
 		minute: 'numeric',
-	}).format(serverTime);
+	}).format(serverTime);	
 
 	return formattedTime;
 }

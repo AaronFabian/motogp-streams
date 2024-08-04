@@ -28,10 +28,9 @@ export interface MotoGPTodayStream {
 
 export interface IncomingAlert {
 	id: number;
-	message: string;
-	sendAt: Date;
-	lineToUUID: string;
+	title: string;
 	calendar: Calendar;
+	circuitName: string;
 	time: string;
 	category: string;
 	categoryName: string;
@@ -49,8 +48,8 @@ export async function getTodayStreams(): Promise<MotoGPTodayStream[]> {
 	const query = 'CALL today_streams(?, ?, ?)';
 	const [todayStreams, _] = await connQuery(query, [
 		currentDate.getFullYear(),
-		10, // currentDate.getMonth() + 1, // month start from 0
-		6,
+		currentDate.getMonth() + 1, // currentDate.getMonth() + 1, // month start from 0
+		currentDate.getDate(),
 	]);
 
 	const motoGPTodayStreams: MotoGPTodayStream[] = todayStreams.map((stream: any) => ({
@@ -78,19 +77,17 @@ export async function getIncomingAlerts(userId: number): Promise<IncomingAlert[]
 
 	const userIncomingAlerts: IncomingAlert[] = incomingAlerts.map((alert: any) => {
 		const calendar: Calendar = {
-			day: alert.day,
-			month: alert.month,
 			year: alert.year,
-			dayName: alert.day_name,
-			monthName: alert.month_name,
+			month: alert.month,
+			day: alert.day,
 		};
 
 		const incomingAlert: IncomingAlert = {
 			id: alert.id,
-			message: alert.message,
 			time: alert.time,
-			sendAt: alert.send_at,
-			lineToUUID: alert.line_to_uuid,
+			title: alert.title,
+			circuitName: alert.circuit_name,
+			// sendAt: alert.send_at,
 			category: alert.category,
 			categoryName: alert.category_name,
 			calendar,
@@ -183,5 +180,91 @@ export async function getDataCount(): Promise<DataCount | null> {
 		return result.reduce((prev: any, curr: any) => ({ ...prev, [curr.table_name]: curr.total }), iData);
 	} catch (error) {
 		return null;
+	}
+}
+
+export async function registerIncomingMessage(
+	ids: any,
+	alertDate: Date,
+	alertEnum: string,
+	message: string,
+	eventDate: Date
+) {
+	try {
+		const year = alertDate.getFullYear();
+		const month = alertDate.getMonth();
+		const day = alertDate.getDate();
+		const dateStr = `${year}-${month}-${day} 00:00:00`;
+
+		// line UUID
+		// user id,
+		// schedule id
+		// event id
+		// schedule id
+		// circuit id
+		// console.log(ids);
+		connection.beginTransaction();
+
+		const query = 'CALL register_incoming_message(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		await connQuery(query, [
+			message,
+			dateStr,
+			ids.userLineUUID,
+			ids.userId,
+			ids.scheduleId,
+			ids.eventId,
+			ids.calendarId,
+			ids.circuitId,
+			alertEnum,
+			eventDate,
+		]);
+
+		const getLastInsertedIdStr = 'SELECT LAST_INSERT_ID() AS last_id;';
+		const inserted_id = await connQuery(getLastInsertedIdStr, []);
+
+		connection.commit();
+
+		return inserted_id[0].last_id as number;
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
+}
+
+export async function unregisterIncomingMessage(userId: number, userLineUUID: string, alertId: number) {
+	try {
+		const query = 'DELETE FROM incoming_messages WHERE id = ? AND line_to_uuid = ? AND user_id = ?';
+		const response = await connQuery(query, [alertId, userLineUUID, userId]);
+		if (response.affectedRows === 0) {
+			throw new Error('no rows to be deleted !');
+		}
+
+		return true;
+	} catch (error) {
+		console.error('FATAL_ERROR unregisterIncomingMessage ', error);
+		return false;
+	}
+}
+
+export async function updateIncomingMessage(
+	userId: number,
+	userLineUUID: string,
+	incomingMessageId: number,
+	alertEnum: string
+) {
+	const dayMinus = Number(alertEnum.split('-')[0]);
+
+	try {
+		const query = `UPDATE incoming_messages 
+										SET send_at = (SELECT event_date FROM (SELECT event_date FROM incoming_messages WHERE id = ?) AS subquery) + INTERVAL ? DAY, 
+										alert_me_before = ?
+									WHERE user_id = ? AND line_to_uuid = ? AND incoming_messages.id = ?;
+									`;
+		await connQuery(query, [incomingMessageId, -dayMinus, alertEnum, userId, userLineUUID, incomingMessageId]);
+
+		return true;
+	} catch (error) {
+		console.error('FATAL_ERROR updateIncomingMessage ', error);
+		return false;
 	}
 }

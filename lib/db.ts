@@ -8,9 +8,9 @@
 import mysql from 'mysql';
 
 const connection: mysql.Connection = mysql.createConnection({
-	host: 'localhost',
+	host: '34.146.29.175',
 	user: 'root',
-	password: '',
+	password: "&q7|sc=Q@$+BVf'$",
 	database: 'motogp_streams',
 });
 
