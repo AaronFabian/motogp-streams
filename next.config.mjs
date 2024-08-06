@@ -16,9 +16,6 @@ const nextConfig = {
 			},
 		],
 	},
-	env: {
-		NEXT_PUBLIC_HOST: process.env.NEXT_PUBLIC_HOST,
-	},
 };
 
 export default nextConfig;

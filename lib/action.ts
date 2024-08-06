@@ -1,11 +1,16 @@
 'use server';
 
 import { auth, signIn } from '@/lib/auth';
+import { getSchedulesInMonth as __getSchedulesInMonth } from '@/lib/data-service.ts';
 import { registerIncomingMessage, unregisterIncomingMessage, updateIncomingMessage } from './data-service.ts';
-import { revalidatePath } from 'next/cache';
 
 export async function signInAction() {
 	await signIn('google', { redirectTo: '/account' });
+}
+
+export async function getSchedulesInMonth(year: number, month: number, order: number) {
+	const [data, _] = (await __getSchedulesInMonth(Number(year), Number(month), Number(order))) as any;
+	return data.map((d: any) => d.day);
 }
 
 export async function registerAlert(ids: any, alertDate: Date, eventDate: Date, alertEnum: string, title: string) {
@@ -35,7 +40,7 @@ ${eventDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: '
 
 Visit: ${process.env.NEXT_PUBLIC_URL}
 `;
-
+	// console.log(ids);
 	const insertedId = await registerIncomingMessage(ids, alertDate, alertEnum, registerMsg, eventDate);
 	if (insertedId === null) return ['ERROR_WHILE_REGISTER_MESSAGE', null];
 

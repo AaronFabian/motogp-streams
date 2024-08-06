@@ -8,7 +8,7 @@
 		"start": "next start",
 		"lint": "next lint",
 		"docker-compose-up": "docker compose up",
-		"dev:custom": "node ./lib/server.ts"
+		"dev:custom": "node ./lib/server.mts"
 	},
 	"dependencies": {
 		"@heroicons/react": "^2.1.4",
@@ -21,6 +21,7 @@
 		"js-cookie": "^3.0.5",
 		"jsonwebtoken": "^9.0.2",
 		"mysql": "^2.18.1",
+		"mysql2": "^3.11.0",
 		"next": "14.2.4",
 		"next-auth": "^5.0.0-beta.19",
 		"react": "^18",

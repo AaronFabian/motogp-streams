@@ -5,12 +5,25 @@
 
 */
 
-import mysql from 'mysql';
+// import mysql from 'mysql';
 
-const connection: mysql.Connection = mysql.createConnection({
-	host: '34.146.29.175',
+// const connection: mysql.Connection = mysql.createConnection({
+// 	host: '35.200.68.183',
+// 	user: 'root',
+// 	password: 'y;Z_Z?/_8Lm-:=OA',
+// 	database: 'motogp_streams',
+// });
+
+// export { connection };
+
+// Get the client
+import mysql from 'mysql2/promise';
+
+// Create the connection to database
+const connection = mysql.createConnection({
+	host: '35.200.68.183',
 	user: 'root',
-	password: "&q7|sc=Q@$+BVf'$",
+	password: 'y;Z_Z?/_8Lm-:=OA',
 	database: 'motogp_streams',
 });
 

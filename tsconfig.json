@@ -1,5 +1,6 @@
 {
 	"compilerOptions": {
+		"target": "es2017",
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"allowJs": true,
 		"skipLibCheck": true,
@@ -22,6 +23,14 @@
 			"@/*": ["./*"]
 		}
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "server.js"],
+	"include": [
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		".next/types/**/*.ts",
+		"server.js",
+		"webpack.config.js",
+		"lib/db.mts"
+	],
 	"exclude": ["node_modules"]
 }

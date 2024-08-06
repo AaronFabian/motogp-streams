@@ -3,12 +3,10 @@ import { promisify } from 'util';
 import { connection } from '@/lib/db';
 import { Calendar } from '@/app/_components/AccountIncomingAlertList.tsx';
 
-declare interface RowDataPacket {}
-
 // wrap the connection.query function with Promise; .bind() make sure that
 // internal library 'this' is available otherwise can cause error or ambiguity
 // the reason use this utility is to avoid the new Promise pattern instead use await
-export const connQuery = promisify(connection.query).bind(connection) as any;
+// export const connQuery = promisify(connection.query).bind(connection) as any;
 
 export interface MotoGPTodayStream {
 	title: string;
@@ -46,12 +44,14 @@ export async function getTodayStreams(): Promise<MotoGPTodayStream[]> {
 	// const jpDate = new Date(currentDate.toLocaleDateString('en-US', { timeZone: 'Asia/Tokyo' }));
 
 	const query = 'CALL today_streams(?, ?, ?)';
-	const [todayStreams, _] = await connQuery(query, [
+	const conn = await connection;
+	const [result, _] = (await conn.query(query, [
 		currentDate.getFullYear(),
 		currentDate.getMonth() + 1, // currentDate.getMonth() + 1, // month start from 0
 		currentDate.getDate(),
-	]);
+	])) as any;
 
+	const [todayStreams, resultHeader] = result;
 	const motoGPTodayStreams: MotoGPTodayStream[] = todayStreams.map((stream: any) => ({
 		title: stream.title,
 		year: stream.year,
@@ -73,7 +73,8 @@ export async function getTodayStreams(): Promise<MotoGPTodayStream[]> {
 
 export async function getIncomingAlerts(userId: number): Promise<IncomingAlert[]> {
 	const query = 'CALL user_incoming_alerts(?)';
-	const [incomingAlerts, _] = (await connQuery(query, [userId])) as any[];
+	const conn = await connection;
+	const [[incomingAlerts, resultHeader], packet] = (await conn.query(query, [userId])) as any;
 
 	const userIncomingAlerts: IncomingAlert[] = incomingAlerts.map((alert: any) => {
 		const calendar: Calendar = {
@@ -101,7 +102,8 @@ export async function getIncomingAlerts(userId: number): Promise<IncomingAlert[]
 
 export async function getUserByEmail(email: string) {
 	const query = 'CALL get_user_by_email(?)';
-	const [users] = await connQuery(query, [email]);
+	const conn = await connection;
+	const [users] = (await conn.query(query, [email])) as any;
 	const user = users[0]; // should be and only want 1 data
 
 	return user;
@@ -110,18 +112,11 @@ export async function getUserByEmail(email: string) {
 export async function createUserUsingGoogle(email: string, username: string) {
 	try {
 		const query = 'CALL create_user_using_google(?, ?);';
-		await connQuery(query, [email, username]);
+		const conn = await connection;
+		await conn.query(query, [email, username]);
 	} catch (error) {
 		console.error('Fatal Error: Something went wrong when creating user using Google !', error);
 		throw new Error('Fatal Error: Something went wrong when creating user using Google !');
-	}
-}
-
-export async function getSchedulePerMonth(month: number) {
-	try {
-	} catch (error) {
-		console.error('FATAL_ERROR getSchedulePerMonth', error);
-		return null;
 	}
 }
 
@@ -129,7 +124,8 @@ export async function getAllMotoGPMonth() {
 	try {
 		const query =
 			'SELECT month, calendars.order FROM calendars WHERE calendars.year = 2024 GROUP BY month, calendars.order;';
-		const result = await connQuery(query, []);
+		const conn = await connection;
+		const [result, _] = await conn.query(query, []);
 
 		return result;
 	} catch (error) {
@@ -141,7 +137,8 @@ export async function getAllMotoGPMonth() {
 export async function getSchedulesInMonth(year: number, month: number, order: number) {
 	try {
 		const query = 'CALL get_schedules_in_month(?, ?, ?)';
-		const result = await connQuery(query, [year, month, order]);
+		const conn = await connection;
+		const [result, _] = await conn.query(query, [year, month, order]);
 
 		return result;
 	} catch (error) {
@@ -152,7 +149,8 @@ export async function getSchedulesInMonth(year: number, month: number, order: nu
 export async function getSchedulesPerDay(year: number, month: number, day: number, order: number, userId: number) {
 	try {
 		const query = 'CALL get_schedules_per_day(?, ?, ?, ?, ?)';
-		const result = await connQuery(query, [year, month, day, order, userId]);
+		const conn = await connection;
+		const [result, _] = await conn.query(query, [year, month, day, order, userId]);
 
 		return result;
 	} catch (error) {
@@ -169,7 +167,8 @@ export interface DataCount {
 export async function getDataCount(): Promise<DataCount | null> {
 	try {
 		const query = 'SELECT * FROM v_data_count';
-		const result = (await connQuery(query, [])) as any[];
+		const conn = await connection;
+		const [result, _] = (await conn.query(query, [])) as any[];
 
 		const iData: DataCount = {
 			calendars: 0,
@@ -190,6 +189,8 @@ export async function registerIncomingMessage(
 	message: string,
 	eventDate: Date
 ) {
+	const conn = await connection;
+
 	try {
 		const year = alertDate.getFullYear();
 		const month = alertDate.getMonth();
@@ -203,10 +204,10 @@ export async function registerIncomingMessage(
 		// schedule id
 		// circuit id
 		// console.log(ids);
-		connection.beginTransaction();
+		conn.beginTransaction();
 
 		const query = 'CALL register_incoming_message(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-		await connQuery(query, [
+		await conn.query(query, [
 			message,
 			dateStr,
 			ids.userLineUUID,
@@ -220,9 +221,9 @@ export async function registerIncomingMessage(
 		]);
 
 		const getLastInsertedIdStr = 'SELECT LAST_INSERT_ID() AS last_id;';
-		const inserted_id = await connQuery(getLastInsertedIdStr, []);
+		const [inserted_id, _] = (await conn.query(getLastInsertedIdStr, [])) as any;
 
-		connection.commit();
+		conn.commit();
 
 		return inserted_id[0].last_id as number;
 	} catch (error) {
@@ -234,7 +235,8 @@ export async function registerIncomingMessage(
 export async function unregisterIncomingMessage(userId: number, userLineUUID: string, alertId: number) {
 	try {
 		const query = 'DELETE FROM incoming_messages WHERE id = ? AND line_to_uuid = ? AND user_id = ?';
-		const response = await connQuery(query, [alertId, userLineUUID, userId]);
+		const conn = await connection;
+		const [response, _] = (await conn.query(query, [alertId, userLineUUID, userId])) as any;
 		if (response.affectedRows === 0) {
 			throw new Error('no rows to be deleted !');
 		}
@@ -260,7 +262,8 @@ export async function updateIncomingMessage(
 										alert_me_before = ?
 									WHERE user_id = ? AND line_to_uuid = ? AND incoming_messages.id = ?;
 									`;
-		await connQuery(query, [incomingMessageId, -dayMinus, alertEnum, userId, userLineUUID, incomingMessageId]);
+		const conn = await connection;
+		await conn.query(query, [incomingMessageId, -dayMinus, alertEnum, userId, userLineUUID, incomingMessageId]);
 
 		return true;
 	} catch (error) {

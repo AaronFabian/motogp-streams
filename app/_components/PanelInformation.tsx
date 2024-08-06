@@ -1,4 +1,4 @@
-import { MotoGPTodayStream } from '@/lib/data-service.ts';
+import { MotoGPTodayStream } from '@/lib/data-service';
 import { CalendarDaysIcon, ClockIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 

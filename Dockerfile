@@ -6,8 +6,11 @@ WORKDIR /usr/src/app
 
 RUN npm i
 
-# EXPOSE 8000 # uncomment this if you use only container
+# uncomment this if you use only container
+# EXPOSE 3000 
 
 # CMD [ "npm", "run", "dev" ]
 
-CMD [ "npm", "run", "dev:custom" ]
+# CMD [ "npm", "run", "dev:custom" ]
+
+CMD [ "npm", "run", "start" ]

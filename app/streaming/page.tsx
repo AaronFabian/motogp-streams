@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 
-import { getTodayStreams, MotoGPTodayStream } from '@/lib/data-service.ts';
+import { getTodayStreams, MotoGPTodayStream } from '@/lib/data-service';
 import MainScreen from '@/app/_components/MainScreen.tsx';
 import PanelInformation from '@/app/_components/PanelInformation.tsx';
 import Schedules from '@/app/_components/Schedules.tsx';

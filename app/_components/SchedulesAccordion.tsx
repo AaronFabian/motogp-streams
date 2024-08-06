@@ -7,6 +7,7 @@ import { BellAlertIcon, ChevronDownIcon, ClockIcon, InformationCircleIcon } from
 import DayPicker from '@/app/_components/DayPicker.tsx';
 import LineAlertButton from '@/app/_components/LineAlertButton.tsx';
 import toast from 'react-hot-toast';
+import { getSchedulesInMonth as service_getScheduleInMonth } from '@/lib/action.ts';
 
 export default function SchedulesAccordion({
 	classList = '',
@@ -46,8 +47,9 @@ export default function SchedulesAccordion({
 			setLoading(true);
 
 			// 02 Get the data from request to server and check if there is no error
-			const response = await fetch(`/api/get-schedule-in-month?year=${year}&month=${month}&order=${order}`) // prettier-ignore
-			const { data } = await response.json();
+			// const response = await fetch(`/api/get-schedule-in-month?year=${year}&month=${month}&order=${order}`) // prettier-ignore
+			// const { data } = await response.json();
+			const data = await service_getScheduleInMonth(year, month, order);
 
 			// 03 End of loading and assign the data
 			setScheduleData(data);
@@ -113,14 +115,7 @@ export default function SchedulesAccordion({
 				className={`${state ? 'h-auto' : 'h-0'} overflow-hidden transition-all duration-300 ease-in-out`}
 			>
 				{/* calendars UI */}
-				{!loading && (
-					<DayPicker
-						year={2024}
-						month={month - 1}
-						sportDayAs={scheduleData.map((d: any) => d.day)}
-						onClick={handleDayPicker}
-					/>
-				)}
+				{!loading && <DayPicker year={2024} month={month - 1} sportDayAs={scheduleData} onClick={handleDayPicker} />}
 				{loading && (
 					<p className="text-center text-xs py-2">
 						Loading calendars... <ClockIcon height={12} className="pl-1 inline-block" />
@@ -176,6 +171,9 @@ function Card({ schedule }: { schedule: any }) {
 	async function handleSetAlert(alertEnum: string) {
 		// Do not proceed if user not defined
 		if (!user) return toast('Please login to use this feature !');
+
+		// Do not proceed if user not yet resister
+		if (user.lineUUID === null) return toast('Oops! please register your Line account');
 
 		// Do not proceed if this card is sending/loading
 		if (loading) return toast.error('Please wait and try again');
@@ -234,7 +232,7 @@ function Card({ schedule }: { schedule: any }) {
 
 		if (result === 'LINE_REQUIRED') {
 			setLoading(false);
-			toast.error('Oops! please register the your Line at account page');
+			toast.error('Oops! please register your Line account');
 			return;
 		}
 

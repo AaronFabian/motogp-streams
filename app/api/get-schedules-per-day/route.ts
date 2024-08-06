@@ -14,9 +14,15 @@ export async function GET(request: NextRequest, response: NextResponse) {
 		if (!year || !month || !day || !order) throw new Error('Please provide the qualifies URL params');
 
 		const cleanedUserId = userId !== 'null' ? Number(userId) : 0;
-		const data = await getSchedulesPerDay(Number(year), Number(month), Number(day), Number(order), cleanedUserId);
+		const data = (await getSchedulesPerDay(
+			Number(year),
+			Number(month),
+			Number(day),
+			Number(order),
+			cleanedUserId
+		)) as any;
 
-		return NextResponse.json({ status: 'success', data: data[0] }, { status: 200 });
+		return NextResponse.json({ status: 'success', data: data?.[0] }, { status: 200 });
 	} catch (error) {
 		return NextResponse.json({ status: 'fail', message: (error as Error).message }, { status: 400 });
 	}

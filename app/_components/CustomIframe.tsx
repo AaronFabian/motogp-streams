@@ -13,7 +13,7 @@ export default function CustomIframe({ iframeData }: { iframeData: any }) {
 
 	const [order, setOrder] = useState<number | null>(null);
 
-	const getIframe = iframeData[`${year}-${month}-${date}`].find((d: any, i: number) => {
+	const getIframe = iframeData[`${year}-${month}-${date}`]?.find((d: any, i: number) => {
 		// Example UTC date string in ISO 8601 format
 		const utcDateString = d.eventTimeInUTC + ':00.000Z';
 

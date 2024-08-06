@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export const revalidate = 60 * 60 * 24 * 7;
 
 export default async function page() {
-	const motoGPCalendars = await getAllMotoGPMonth();
+	const motoGPCalendars = (await getAllMotoGPMonth()) as any;
 
 	if (!motoGPCalendars) return <p>Something gone wrong Or no data at the current</p>;
 
