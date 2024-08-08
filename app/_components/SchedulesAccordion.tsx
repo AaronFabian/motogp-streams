@@ -197,7 +197,7 @@ function Card({ schedule }: { schedule: any }) {
 			return;
 		}
 
-		const eventDate = new Date(year, month, day);
+		const eventDate = new Date(year, month - 1, day + 1);
 
 		// 04 If the user update the alert
 		// this code belows mean updating
@@ -215,8 +215,9 @@ function Card({ schedule }: { schedule: any }) {
 		}
 
 		// 05 If the user add new alert
-		const dateTime = new Date(year, month, day - Number(minusDay));
-		const [result, insertedId] = await registerAlert(ids, dateTime, eventDate, alertEnum, schedule.title);
+		// const dateTime = new Date(year, month - 1, day);
+		const alertDate = new Date(year, month - 1, day - Number(minusDay) + 1);
+		const [result, insertedId] = await registerAlert(ids, alertDate, eventDate, alertEnum, schedule.title);
 
 		if (result === 'ERROR') {
 			setLoading(false);

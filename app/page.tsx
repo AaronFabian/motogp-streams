@@ -3,8 +3,9 @@ import DayPicker from './_components/DayPicker.tsx';
 
 export default function Page() {
 	// test
+	const test = new Date();
 	const MONTH_OFF_SET = 1;
-	const month = 10 - MONTH_OFF_SET;
+	const month = test.getMonth(); // - MONTH_OFF_SET;
 
 	// console.log(current.toLocaleDateString('us-US', { weekday: 'long' }));
 
@@ -13,9 +14,9 @@ export default function Page() {
 			<DataCountComponent />
 
 			<DayPicker
-				year={2024}
+				year={test.getFullYear()}
 				month={month}
-				sportDayAs={[Number(new Date().toLocaleDateString('en-US', { day: 'numeric' }))]}
+				sportDayAs={[Number(test.toLocaleDateString('en-US', { day: 'numeric' }))]}
 			/>
 		</div>
 	);
