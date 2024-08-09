@@ -12,7 +12,7 @@ export default async function DataCountComponent() {
 		);
 
 	return (
-		<div className="flex justify-between mb-2">
+		<div className="flex justify-between mb-2 text-center">
 			<p className="bg-dim-red text-sm px-2 pb-0.5">
 				{<CalendarDaysIcon className="inline" width={17} />} Calendars : {counts.calendars}
 			</p>

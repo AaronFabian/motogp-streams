@@ -84,7 +84,7 @@ export async function getIncomingAlerts(userId: number): Promise<IncomingAlert[]
 		};
 
 		const incomingAlert: IncomingAlert = {
-			id: alert.id,
+			id: alert.schedule_id,
 			time: alert.time,
 			title: alert.title,
 			circuitName: alert.circuit_name,
@@ -195,7 +195,7 @@ export async function registerIncomingMessage(
 		const year = alertDate.getFullYear();
 		const month = alertDate.getMonth();
 		const day = alertDate.getDate();
-		const dateStr = `${year}-${month}-${day} 00:00:00`;
+		const dateStr = `${year}-${month + 1}-${day} 00:00:00`;
 
 		// line UUID
 		// user id,
@@ -209,7 +209,7 @@ export async function registerIncomingMessage(
 		const query = 'CALL register_incoming_message(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 		await conn.query(query, [
 			message,
-			dateStr,
+			alertDate,
 			ids.userLineUUID,
 			ids.userId,
 			ids.scheduleId,

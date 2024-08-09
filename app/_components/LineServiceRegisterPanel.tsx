@@ -8,6 +8,7 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { revalidatePath } from 'next/cache';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import LineAddOfficialAccountButton from './LineAddOfficialAccountButton.tsx';
 
 export default function LineServiceRegisterPanel({ user }: { user: User }) {
 	const [showQR, setShowQR] = useState(false);
@@ -61,6 +62,8 @@ export default function LineServiceRegisterPanel({ user }: { user: User }) {
 						width={200}
 						height={200}
 					/>
+
+					<LineAddOfficialAccountButton />
 				</>
 			)}
 		</>

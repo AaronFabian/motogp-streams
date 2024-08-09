@@ -215,7 +215,6 @@ function Card({ schedule }: { schedule: any }) {
 		}
 
 		// 05 If the user add new alert
-		// const dateTime = new Date(year, month - 1, day);
 		const alertDate = new Date(year, month - 1, day - Number(minusDay) + 1);
 		const [result, insertedId] = await registerAlert(ids, alertDate, eventDate, alertEnum, schedule.title);
 
