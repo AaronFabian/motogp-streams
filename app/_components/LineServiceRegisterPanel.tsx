@@ -50,9 +50,7 @@ export default function LineServiceRegisterPanel({ user }: { user: User }) {
 						<span className="text-primary-gold-500 pl-3" onClick={copyToClipboard}>
 							register me/{user.email}
 						</span>
-						<span className="pl-1 text-alert" onClick={copyToClipboard}>
-							* click to copy
-						</span>
+						<span className="pl-1 text-alert">* click to copy</span>
 					</p>
 					<p className="text-[12px]">4. Once finished then refresh the website</p>
 					<Image

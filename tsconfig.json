@@ -1,13 +1,13 @@
 {
 	"compilerOptions": {
-		"target": "es2017",
+		"target": "ESNext",
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"allowJs": true,
 		"skipLibCheck": true,
 		"strict": true,
 		"noEmit": true,
 		"esModuleInterop": true,
-		"module": "esnext",
+		"module": "ESNext",
 		"moduleResolution": "bundler",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
@@ -28,9 +28,9 @@
 		"**/*.ts",
 		"**/*.tsx",
 		".next/types/**/*.ts",
-		"server.js",
 		"webpack.config.js",
-		"lib/db.mts"
+		"lib/db.mts",
+		"lib/server.mjs"
 	],
 	"exclude": ["node_modules"]
 }

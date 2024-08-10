@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 	},
 	description:
 		'Never miss a moment of your favorite MotoGP races! With MotoGP Streams, you can watch live streams of all MotoGP events for free. Experience the thrill of the race from the comfort of your home.',
+	icons: { icon: 'avatar-dummy.png' },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -26,7 +27,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
 	return (
 		<html lang="en" className="dark transition-all duration-150">
-			{/* padding p-2 */}
 			<body className={`${inter.className} dark:bg-primary-black-500 dark:text-primary-white-500`}>
 				<Navbar user={session?.user ?? null} />
 				<SideNav />
