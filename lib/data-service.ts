@@ -271,3 +271,35 @@ export async function updateIncomingMessage(
 		return false;
 	}
 }
+
+export async function insertCommentHistory(params: any) {
+	try {
+		const conn = await connection;
+
+		conn.beginTransaction();
+		const query =
+			'INSERT INTO comment_history(sender, at, sender_lang, converted_date, message, users_id) VALUES (?, ?, ?, ?, ?, ?)';
+
+		await conn.query(query, [
+			params.sender,
+			params.date,
+			params.clientLang,
+			params.convertedDate,
+			params.message,
+			params.userId,
+		]);
+
+		const query2 =
+			'SELECT id, sender, at, sender_lang, converted_date, message FROM comment_history WHERE id = LAST_INSERT_ID();';
+
+		const result = await conn.query(query2, []);
+		const [newComment, _] = result;
+
+		conn.commit();
+
+		return newComment;
+	} catch (error) {
+		console.error('FATAL_ERROR insertCommentHistory ', error);
+		throw error;
+	}
+}

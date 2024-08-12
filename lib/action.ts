@@ -1,8 +1,11 @@
 'use server';
 
 import { auth, signIn } from '@/lib/auth';
-import { getSchedulesInMonth as __getSchedulesInMonth } from '@/lib/data-service.ts';
+import { getSchedulesInMonth as __getSchedulesInMonth, insertCommentHistory } from '@/lib/data-service.ts';
 import { registerIncomingMessage, unregisterIncomingMessage, updateIncomingMessage } from './data-service.ts';
+import { ClientCommentEmitterBuilder } from '@/app/_lib/ClientEmitter.ts';
+import { Socket } from 'socket.io-client';
+import { HandledError, HandledErrorType } from '@/app/_lib/HandledError.ts';
 
 export async function signInAction() {
 	await signIn('google', { redirectTo: '/account' });
@@ -68,6 +71,12 @@ export async function updateAlert(incomingMessageId: number, alertEnum: string):
 	const userId = Number(session!.user!.id);
 
 	return await updateIncomingMessage(userId, userLineUUID, incomingMessageId, alertEnum);
+}
+
+export async function handleInsertingComment(params: any) {
+	const result = (await insertCommentHistory(params)) as any[];
+
+	return result[0];
 }
 
 // export async function loginUser(formData: FormData) {

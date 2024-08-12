@@ -1,1 +1,3 @@
 ssh -R motogp-streams:80:localhost:3000 serveo.net
+
+【3つのパターン】
