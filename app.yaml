@@ -11,18 +11,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-runtime: nodejs
+# runtime: nodejs
+# env: flex
+# runtime_config:
+#   operating_system: 'ubuntu22'
+#   node_version: '22'
+
+# # For the flexible environment, specify the desired machine type
+# # (e.g., F1, F2, F4, F4_1G)
+# instance_class: F2
+
+# # Optional: Specify scaling options
+# automatic_scaling:
+#   min_num_instances: 1
+#   max_num_instances: 5
+# # entrypoint: next dev:custom
+
+# [START app_yaml]
+runtime: custom
 env: flex
-runtime_config:
-  operating_system: 'ubuntu22'
-  node_version: '22'
 
-# For the flexible environment, specify the desired machine type
-# (e.g., F1, F2, F4, F4_1G)
-instance_class: F2
+# Replace `forwarded_ports` and `instance_tag` as they're not needed
+# Ensure you have session affinity enabled for WebSocket support
+network:
+  session_affinity: true
 
-# Optional: Specify scaling options
-automatic_scaling:
-  min_num_instances: 1
-  max_num_instances: 5
-# entrypoint: next dev:custom
+# Manual scaling (adjust the instance count according to your needs)
+manual_scaling:
+  instances: 1
+
+resources:
+  cpu: 1
+  memory_gb: 0.5
+# [END network]
+# [END app_yaml]

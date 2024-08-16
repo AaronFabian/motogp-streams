@@ -7,14 +7,12 @@ export default function CustomIframe({ iframeData }: { iframeData: any }) {
 	const year = today.toLocaleDateString('en-US', { year: 'numeric' });
 	const month = today.toLocaleDateString('en-US', { month: '2-digit' });
 	const date = today.toLocaleDateString('en-US', { day: '2-digit' });
-	const hour = today.toLocaleTimeString('en-US', { hour: '2-digit' });
-	const minute = today.toLocaleDateString('en-US', { hour: '2-digit' });
+	// const hour = today.toLocaleTimeString('en-US', { hour: '2-digit' });
+	// const minute = today.toLocaleDateString('en-US', { hour: '2-digit' });
 
-	const [order, setOrder] = useState<number | null>(null);
-
-	const getIframe = iframeData[`${year}-${month}-${date}`]?.find((d: any, i: number) => {
+	const getIframe = iframeData[`${year}-${month}-${date}`]?.reduce((_: any, cur: any) => {
 		// Example UTC date string in ISO 8601 format
-		const utcDateString = d.eventTimeInUTC + ':00.000Z';
+		const utcDateString = cur.eventTimeInUTC + ':00.000Z';
 
 		// Create a new Date object treating it as UTC
 		const eventDateIntUTC = new Date(utcDateString);
@@ -28,13 +26,11 @@ export default function CustomIframe({ iframeData }: { iframeData: any }) {
 
 		// console.log('UTC Date:', eventDateIntUTC);
 		// console.log('Tokyo Date:', tokyoDateString);
-		if (Date.now() > eventDateIntUTC.getTime()) {
-			if (order === i) return;
 
-			setOrder(i);
-			return d;
+		if (Date.now() > eventDateIntUTC.getTime()) {
+			return cur;
 		}
-	});
+	}, undefined);
 
 	return (
 		<>
