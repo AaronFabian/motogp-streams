@@ -4,6 +4,10 @@ import { MotoGPTodayStream } from '@/lib/data-service';
 import { CalendarDaysIcon, ClockIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 
+function padZero(num: number) {
+	return num.toString().padStart(2, '0');
+}
+
 export default function PanelInformation({ todayStreams }: { todayStreams: MotoGPTodayStream[] }) {
 	if (todayStreams.length === 0) return null;
 
@@ -28,14 +32,18 @@ export default function PanelInformation({ todayStreams }: { todayStreams: MotoG
 			</div>
 		);
 
-	const formattedTime = new Intl.DateTimeFormat(navigator.language, {
+	const formattedDate = new Date(
+		`${liveSchedule.year}-${padZero(liveSchedule.month)}-${padZero(liveSchedule.day)}T${padZero(
+			liveSchedule.time.split('-')[0]
+		)}:00`
+	);
+
+	const formattedTime = new Intl.DateTimeFormat('en-US', {
 		timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 		hourCycle: 'h24',
 		hour: '2-digit',
 		minute: '2-digit',
-	}).format(
-		new Date(`${liveSchedule.year}-${liveSchedule.month}-${liveSchedule.day}T${liveSchedule.time.split('-')[0]}:00`)
-	);
+	}).format(formattedDate);
 
 	return (
 		<div className="p-2">
