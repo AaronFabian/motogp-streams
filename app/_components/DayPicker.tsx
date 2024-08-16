@@ -39,7 +39,7 @@ export default function DayPicker({
 
 	return (
 		<div className="p-2">
-			<div className="lg:grid lg:grid-cols-12 lg:gap-x-16">
+			<div>
 				<div className="mt-2 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9">
 					<div className="mt-6 grid grid-cols-7 text-xs leading-6 text-gray-500">
 						<div>M</div>
