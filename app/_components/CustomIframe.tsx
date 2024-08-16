@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 export default function CustomIframe({ iframeData }: { iframeData: any }) {
 	const today = new Date();
 	const year = today.toLocaleDateString('en-US', { year: 'numeric' });

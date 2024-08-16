@@ -28,10 +28,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 	return (
 		<html lang="en" className="dark transition-all duration-150">
 			<body className={`${inter.className} dark:bg-primary-black-500 dark:text-primary-white-500`}>
-				<Navbar user={session?.user ?? null} />
-				<SideNav />
-				<UserProvider userData={session?.user ?? null}>{children}</UserProvider>
-				<Footer />
+				<div className="max-w-lg lg:m-auto">
+					<Navbar user={session?.user ?? null} />
+					<SideNav />
+					<UserProvider userData={session?.user ?? null}>{children}</UserProvider>
+					<Footer />
+				</div>
 				<Toaster />
 			</body>
 		</html>
