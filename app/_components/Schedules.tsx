@@ -1,6 +1,5 @@
 import { MotoGPTodayStream } from '@/lib/data-service.ts';
-import { BellAlertIcon, ClockIcon, FlagIcon, TvIcon } from '@heroicons/react/24/outline';
-import SetAlarmButton from './SetAlarmButton.tsx';
+import { FlagIcon } from '@heroicons/react/24/outline';
 import ScheduleCard from './ScheduleCard.tsx';
 
 export default function Schedules({ todayStreams }: { todayStreams: MotoGPTodayStream[] }) {
@@ -11,27 +10,8 @@ export default function Schedules({ todayStreams }: { todayStreams: MotoGPTodayS
 		<div className="p-2">
 			<div className="w-full p-2 min-h-24 max-h-48 bg-primary-gray-500 rounded-2xl">
 				<div className="w-full min-h-24 max-h-44 overflow-y-scroll overflow-hidden flex flex-col gap-1.5 relative rounded-xl">
-					{todayStreams.length !== 0 ? (
-						todayStreams.map(stream => {
-							const year = stream.year;
-							const month = stream.month < 10 ? `0${stream.month}` : stream.month.toString();
-							const day = stream.day < 10 ? `0${stream.day}` : stream.day.toString(); // ex data: 7 or 07
-							// const time = stream.time.split('-')[0].split(':'); // ex data: '09:40-09:50'
-							const [hour, minute] = stream.time.split('-')[0].split(':'); // ex data: '09:40-09:50'
-							const scheduleTime = new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute));
-
-							return (
-								<ScheduleCard
-									key={stream.categoryName + scheduleTime}
-									category={stream.category}
-									categoryName={stream.categoryName}
-									serverTime={scheduleTime}
-									isFinished={curDate > scheduleTime.getTime()}
-									// isFinished={__minusDate.getTime() > scheduleTime.getTime()}
-								/>
-							);
-						})
-					) : (
+					{todayStreams.length !== 0 && todayStreams.map((stream, i) => <ScheduleCard key={i} stream={stream} />)}
+					{todayStreams.length === 0 && (
 						<p className="text-xs text-center">
 							No schedules for today <FlagIcon className="w-4 inline-block" />
 						</p>
