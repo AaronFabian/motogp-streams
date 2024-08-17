@@ -51,14 +51,17 @@ export default function PanelInformation({ todayStreams }: { todayStreams: MotoG
 	const day = liveSchedule.day < 10 ? `0${liveSchedule.day}` : liveSchedule.day.toString();
 	const time = liveSchedule.time.split('-')[0]; // ex data: '09:40-09:50'
 
-	const formattedDate = toZonedTime(`${year}-${month}-${day}T${time}:00`, clientTimeZone!);
-	const formattedTime = format(formattedDate, 'ccc, yyyy-MMM-dd H:m');
+	// const formattedDate = toZonedTime(`${year}-${month}-${day}T${time}:00`, clientTimeZone!);
+	// const formattedTime = format(formattedDate, 'ccc, yyyy-MMM-dd H:m');
 	// const formattedTime = new Intl.DateTimeFormat('en-US', {
 	// 	timeZone: clientTimeZone!,
 	// 	hourCycle: 'h24',
 	// 	hour: '2-digit',
 	// 	minute: '2-digit',
 	// }).format(formattedDate);
+
+	console.log(liveSchedule);
+	console.log(`${year}-${month}-${day}T${time}:00`, clientTimeZone);
 
 	return (
 		<div className="p-2">
@@ -77,7 +80,8 @@ export default function PanelInformation({ todayStreams }: { todayStreams: MotoG
 				<div className="flex items-center gap-2">
 					<CalendarDaysIcon className="w-5" />
 					<p className="text-xs font-medium">
-						{formattedTime}
+						{/* TODO: fix to dynamic schedule base on user */}
+						{year}-{month}-{day} {time} JST
 						{/* {liveSchedule.dayName.slice(0, 3)}, {liveSchedule.year} - {liveSchedule.month} - {liveSchedule.day} */}
 					</p>
 				</div>
