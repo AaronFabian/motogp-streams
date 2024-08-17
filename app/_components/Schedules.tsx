@@ -16,8 +16,9 @@ export default function Schedules({ todayStreams }: { todayStreams: MotoGPTodayS
 							const year = stream.year;
 							const month = stream.month < 10 ? `0${stream.month}` : stream.month.toString();
 							const day = stream.day < 10 ? `0${stream.day}` : stream.day.toString(); // ex data: 7 or 07
-							const time = stream.time.split('-')[0]; // ex data: '09:40-09:50'
-							const scheduleTime = new Date(`${year}-${month}-${day}T${time}:00`);
+							// const time = stream.time.split('-')[0].split(':'); // ex data: '09:40-09:50'
+							const [hour, minute] = stream.time.split('-')[0].split(':'); // ex data: '09:40-09:50'
+							const scheduleTime = new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute));
 
 							return (
 								<ScheduleCard

@@ -18,11 +18,13 @@ export default function ScheduleCard({
 }) {
 	const [localTime, setLocalTime] = useState('');
 
-	useEffect(() => {
-		// convert dynamically from user PC
-		const formattedTime = convertTimeToLocale(serverTime);
-		setLocalTime(formattedTime.split(' ')[0]); // example data 7:40:00 AM Western Indonesia Time
-	}, [serverTime]);
+	// useEffect(() => {
+	// convert dynamically from user PC
+	// const formattedTime = convertTimeToLocale(serverTime);
+	// setLocalTime(formattedTime.split(' ')[0]); // example data 7:40:00 AM Western Indonesia Time
+	// }, [serverTime]);
+
+	console.log(serverTime);
 	return (
 		<div
 			className={`w-full h-[50px] bg-primary-black-500 rounded-lg relative px-5 py-2 last:${
@@ -36,7 +38,7 @@ export default function ScheduleCard({
 				<span>
 					<ClockIcon className="w-4 inline-block mr-4" />
 				</span>
-				{localTime}
+				{serverTime.getHours()}:{serverTime.getMinutes()}
 			</p>
 
 			{/* icon */}
