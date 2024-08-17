@@ -1,11 +1,11 @@
 'use client';
 
 import { MotoGPTodayStream } from '@/lib/data-service';
-import { CalendarDaysIcon, ClockIcon } from '@heroicons/react/24/outline';
-import { format, toZonedTime } from 'date-fns-tz';
-import { enUS, ja } from 'date-fns/locale';
+import { CalendarDaysIcon } from '@heroicons/react/24/outline';
+import { toZonedTime } from 'date-fns-tz';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { convertTimeToLocale } from '../_lib/utils.ts';
 
 function padZero(num: number) {
 	return num.toString().padStart(2, '0');
@@ -22,19 +22,22 @@ export default function PanelInformation({ todayStreams }: { todayStreams: MotoG
 
 	if (todayStreams.length === 0) return null;
 
-	const curDate = Date.now();
+	const curDate = new Date();
 
 	const liveSchedule: MotoGPTodayStream | undefined = todayStreams.reduce(
-		(_: MotoGPTodayStream | undefined, stream: MotoGPTodayStream) => {
+		(acc: MotoGPTodayStream | undefined, stream: MotoGPTodayStream) => {
 			const year = stream.year;
 			const month = stream.month < 10 ? `0${stream.month}` : stream.month.toString();
 			const day = stream.day < 10 ? `0${stream.day}` : stream.day.toString();
-			const time = stream.time.split('-')[0]; // ex data: '09:40-09:50'
+			const [hour, minute] = stream.time.split('-')[0].split(':'); // ex data: '09:40-09:50'
 
-			const utcDate = toZonedTime(`${year}-${month}-${day}T${time}:00`, 'Asia/Tokyo');
-			const timestamp = utcDate.getTime(); // Get the timestamp in milliseconds
+			const japanTime = `${stream.year}-${month}-${day}T${hour}:${minute}:00+09:00`; // +09:00 for JST
+			const scheduleTime = new Date(japanTime);
+			// const formattedTime = convertTimeToLocale(scheduleTime);
 
-			if (curDate > timestamp) return stream;
+			if (curDate > scheduleTime) return stream;
+
+			return acc; // Otherwise, return the previous accumulated value
 		},
 		undefined
 	);

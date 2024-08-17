@@ -37,7 +37,6 @@ export default function ScheduleCard({ stream }: { stream: MotoGPTodayStream }) 
 				<span>
 					<ClockIcon className="w-4 inline-block mr-4" />
 				</span>
-
 				{localTime}
 			</p>
 
