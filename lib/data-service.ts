@@ -1,5 +1,3 @@
-import { promisify } from 'util';
-
 import { connection } from '@/lib/db';
 import { Calendar } from '@/app/_components/AccountIncomingAlertList.tsx';
 

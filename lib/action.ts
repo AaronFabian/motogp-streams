@@ -1,11 +1,27 @@
 'use server';
 
 import { auth, signIn } from '@/lib/auth';
-import { getSchedulesInMonth as __getSchedulesInMonth, insertCommentHistory } from '@/lib/data-service.ts';
 import { registerIncomingMessage, unregisterIncomingMessage, updateIncomingMessage } from './data-service.ts';
-import { ClientCommentEmitterBuilder } from '@/app/_lib/ClientEmitter.ts';
-import { Socket } from 'socket.io-client';
-import { HandledError, HandledErrorType } from '@/app/_lib/HandledError.ts';
+import {
+	getSchedulesInMonth as __getSchedulesInMonth,
+	getSchedulesPerDay,
+	insertCommentHistory,
+} from '@/lib/data-service.ts';
+
+export async function handleUserRequestSchedules(
+	year: number,
+	month: number,
+	day: number,
+	order: number,
+	userId: number
+) {
+	if (!year || !month || !day || !order) throw new Error('Please provide the qualifies URL params');
+
+	const cleanedUserId = userId !== null ? Number(userId) : 0;
+	const data = (await getSchedulesPerDay(year, month, day, order, cleanedUserId)) as any;
+
+	return data?.[0];
+}
 
 export async function signInAction() {
 	await signIn('google', { redirectTo: '/account' });

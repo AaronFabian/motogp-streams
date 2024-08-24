@@ -156,7 +156,12 @@ export default function CommentsStreamPanel() {
 					</button>
 				</form>
 
-				<ChevronDownIcon className="w-3 absolute top-0.5 left-1/2 -translate-x-1/2" onClick={handlePanel} />
+				<ChevronDownIcon
+					className={`w-3 absolute top-0.5 left-1/2 -translate-x-1/2 cursor-pointer transition-all ${
+						isPanelOpened && 'stroke-primary-gold-500 rotate-180'
+					}`}
+					onClick={handlePanel}
+				/>
 			</div>
 
 			<p className="text-xs">Status: {isConnected ? 'connected' : 'disconnected'}</p>

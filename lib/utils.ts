@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
+import { cookies } from 'next/headers';
 
 export function timeDifferent(time1: Date, time2: Date): number {
 	const difference = time1.getTime() - time2.getTime();

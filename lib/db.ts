@@ -21,10 +21,10 @@ import mysql from 'mysql2/promise';
 
 // Create the connection to database
 const connection = mysql.createConnection({
-	host: '35.200.68.183',
-	user: 'root',
-	password: 'y;Z_Z?/_8Lm-:=OA',
-	database: 'motogp_streams',
+	host: process.env.DB_HOST,
+	user: process.env.DB_USER,
+	password: process.env.DB_PASSWORD as string,
+	database: process.env.DB_DATABASE_NAME as string,
 });
 
 export { connection };

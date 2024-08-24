@@ -1,41 +1,11 @@
 {
-	"2024-08-03": [
+	"2024-08-18": [
 		{
-			"eventTimeInUTC": "2024-08-03T15:00",
-			"eventTime": "15:00",
-			"title": "MotoGP British GP: MotoGP Sprint",
-			"href": "/fim-moto-gp/motogp-british-gp-motogp-sprint-stream",
-			"iframe": "<iframe src='https://embedstreams.me/fim-moto-gp/motogp-british-gp-motogp-sprint-stream-1' width='100%' height='100%' scrolling='no' frameborder='0' allowfullscreen allowtransparency referrerpolicy='unsafe-url'></iframe>"
-		}
-	],
-	"2024-08-04": [
-		{
-			"eventTimeInUTC": "2024-08-04T09:40",
-			"eventTime": "09:40",
-			"title": "MotoGP British GP: MotoGP Warm Up",
-			"href": "/fim-moto-gp/motogp-british-gp-motogp-warm-up-stream",
-			"iframe": "<iframe src='https://embedstreams.me/fim-moto-gp/motogp-british-gp-motogp-warm-up-stream-1' width='100%' height='100%' scrolling='no' frameborder='0' allowfullscreen allowtransparency referrerpolicy='unsafe-url'></iframe>"
-		},
-		{
-			"eventTimeInUTC": "2024-08-04T11:15",
-			"eventTime": "11:15",
-			"title": "MotoGP British GP: Moto3 Race",
-			"href": "/fim-moto-gp/motogp-british-gp-moto3-race-stream",
-			"iframe": "<iframe src='https://embedstreams.me/fim-moto-gp/motogp-british-gp-moto3-race-stream-1' width='100%' height='100%' scrolling='no' frameborder='0' allowfullscreen allowtransparency referrerpolicy='unsafe-url'></iframe>"
-		},
-		{
-			"eventTimeInUTC": "2024-08-04T13:00",
+			"eventTimeInUTC": "2024-08-18T13:00",
 			"eventTime": "13:00",
-			"title": "MotoGP British GP: MotoGP Race",
-			"href": "/fim-moto-gp/motogp-british-gp-motogp-race-stream",
-			"iframe": "<iframe src='https://embedstreams.me/fim-moto-gp/motogp-british-gp-motogp-race-stream-1' width='100%' height='100%' scrolling='no' frameborder='0' allowfullscreen allowtransparency referrerpolicy='unsafe-url'></iframe>"
-		},
-		{
-			"eventTimeInUTC": "2024-08-04T14:30",
-			"eventTime": "14:30",
-			"title": "MotoGP British GP: Moto2 Race",
-			"href": "/fim-moto-gp/motogp-british-gp-moto2-race-stream",
-			"iframe": "<iframe src='https://embedstreams.me/fim-moto-gp/motogp-british-gp-moto2-race-stream-1' width='100%' height='100%' scrolling='no' frameborder='0' allowfullscreen allowtransparency referrerpolicy='unsafe-url'></iframe>"
+			"title": "MotoGP Austria GP: MotoGP Race",
+			"href": "/fim-moto-gp/motogp-austria-gp-motogp-race-stream",
+			"iframe": "<iframe src='https://embedstreams.me/fim-moto-gp/motogp-austria-gp-motogp-race-stream-1' width='100%' height='100%' scrolling='no' frameborder='0' allowfullscreen allowtransparency referrerpolicy='unsafe-url'></iframe>"
 		}
 	]
 }

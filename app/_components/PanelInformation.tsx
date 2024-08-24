@@ -35,7 +35,7 @@ export default function PanelInformation({ todayStreams }: { todayStreams: MotoG
 			const scheduleTime = new Date(japanTime);
 			// const formattedTime = convertTimeToLocale(scheduleTime);
 
-			if (curDate > scheduleTime) return stream;
+			if (curDate > scheduleTime) return stream; // Update the accumulator with the current stream
 
 			return acc; // Otherwise, return the previous accumulated value
 		},
@@ -45,7 +45,7 @@ export default function PanelInformation({ todayStreams }: { todayStreams: MotoG
 	if (liveSchedule === undefined)
 		return (
 			<div className="p-2">
-				<p className="p-4 text-xs font-medium">No Live Schedule</p>
+				<p className="p-4 text-xs font-medium">No live airing schedule</p>
 			</div>
 		);
 
@@ -63,8 +63,8 @@ export default function PanelInformation({ todayStreams }: { todayStreams: MotoG
 	// 	minute: '2-digit',
 	// }).format(formattedDate);
 
-	console.log(liveSchedule);
-	console.log(`${year}-${month}-${day}T${time}:00`, clientTimeZone);
+	// console.log(liveSchedule);
+	// console.log(`${year}-${month}-${day}T${time}:00`, clientTimeZone);
 
 	return (
 		<div className="p-2">

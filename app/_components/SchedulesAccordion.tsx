@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useUser } from '@/app/_providers/UserContext.tsx';
-import { registerAlert, unregisterAlert, updateAlert } from '@/lib/action.ts';
+import { handleUserRequestSchedules, registerAlert, unregisterAlert, updateAlert } from '@/lib/action.ts';
 import { BellAlertIcon, ChevronDownIcon, ClockIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import DayPicker from '@/app/_components/DayPicker.tsx';
 import LineAlertButton from '@/app/_components/LineAlertButton.tsx';
@@ -47,7 +47,7 @@ export default function SchedulesAccordion({
 			setLoading(true);
 
 			// 02 Get the data from request to server and check if there is no error
-			// const response = await fetch(`/api/get-schedule-in-month?year=${year}&month=${month}&order=${order}`) // prettier-ignore
+			// const response = await fetch(`/api/get-schedule-in-month?year=${year}&month=${month}&order=${order}`)
 			// const { data } = await response.json();
 			const data = await service_getScheduleInMonth(year, month, order);
 
@@ -61,10 +61,7 @@ export default function SchedulesAccordion({
 	}
 
 	async function handleDayPicker(year: number, offsetMonth: number, day: number) {
-		if (currentDaySchedulesLoading) {
-			toast.error('Please wait and try again later !');
-			return;
-		}
+		if (currentDaySchedulesLoading) return toast.error('Please wait and try again later !');
 
 		setCurrentDaySchedulesLoading(true);
 
@@ -75,8 +72,9 @@ export default function SchedulesAccordion({
 			const month = offsetMonth + 1;
 
 			// 02 order from the SchedulesAccordion parameter
-			const response = await fetch(`/api/get-schedules-per-day?year=${year}&month=${month}&day=${day}&order=${order}&user-id=${userId}`); // prettier-ignore
-			const { data } = await response.json();
+			// const response = await fetch(`/api/get-schedules-per-day?year=${year}&month=${month}&day=${day}&order=${order}&user-id=${userId}`);
+			// const { data } = await response.json();
+			const data = await handleUserRequestSchedules(year, month, day, order, userId);
 
 			// console.log(year, month, day, order);
 			// console.log(data);
@@ -116,31 +114,49 @@ export default function SchedulesAccordion({
 			>
 				{/* calendars UI */}
 				{!loading && <DayPicker year={2024} month={month - 1} sportDayAs={scheduleData} onClick={handleDayPicker} />}
-				{loading && (
-					<p className="text-center text-xs py-2">
-						Loading calendars... <ClockIcon height={12} className="pl-1 inline-block" />
-					</p>
-				)}
+				{loading && <LoadingCalendar />}
+				{/* end of calendars UI */}
 
 				{/* Schedules */}
-				{currentDaySchedulesLoading && (
-					<p className="text-center text-xs py-2">
-						Loading schedules... <ClockIcon height={12} className="pl-1 inline-block" />
-					</p>
-				)}
+				{currentDaySchedulesLoading && <LoadingSchedules />}
+				{currentDaySchedules?.length === 0 && <NoSchedulesAtThisDay />}
 				{!currentDaySchedulesLoading && currentDaySchedules && currentDaySchedules?.length > 0 && (
-					<div className="p-2 flex flex-col gap-y-1.5">
-						{currentDaySchedules!.map((schedule: any) => (
-							<Card key={schedule.id} schedule={schedule} />
-						))}
-					</div>
+					<CurrentDaySchedules currentDaySchedules={currentDaySchedules} />
 				)}
-				{currentDaySchedules?.length === 0 && (
-					<p className="m-auto text-sm w-fit px-4 py-1 bg-dim-red rounded-sm mb-2">No schedule at this day !</p>
-				)}
+				{/* end of schedules UI */}
 			</div>
 		</div>
 	);
+}
+
+function LoadingCalendar() {
+	return (
+		<p className="text-center text-xs py-2">
+			Loading calendars... <ClockIcon height={12} className="pl-1 inline-block" />
+		</p>
+	);
+}
+
+function CurrentDaySchedules({ currentDaySchedules }: { currentDaySchedules: any[] }) {
+	return (
+		<div className="p-2 flex flex-col gap-y-1.5">
+			{currentDaySchedules!.map((schedule: any) => (
+				<Card key={schedule.id} schedule={schedule} />
+			))}
+		</div>
+	);
+}
+
+function LoadingSchedules() {
+	return (
+		<p className="text-center text-xs py-2">
+			Loading schedules... <ClockIcon height={12} className="pl-1 inline-block" />
+		</p>
+	);
+}
+
+function NoSchedulesAtThisDay() {
+	return <p className="m-auto text-sm w-fit px-4 py-1 bg-dim-red rounded-sm mb-2">No schedule at this day !</p>;
 }
 
 function Card({ schedule }: { schedule: any }) {
@@ -220,7 +236,7 @@ function Card({ schedule }: { schedule: any }) {
 
 		if (result === 'ERROR') {
 			setLoading(false);
-			toast.error('Failed to add new alert !');
+			toast.error('Failed to adding new alert !');
 			return;
 		}
 
@@ -242,7 +258,7 @@ function Card({ schedule }: { schedule: any }) {
 	}
 
 	return (
-		<div className="w-full h-[96px] px-6 py-3 bg-primary-gray-800 rounded-xl grid grid-cols-5 grid-rows-3 gap-y-2">
+		<div className="w-full h-[96px] px-6 py-3 bg-primary-gray-800 rounded-xl grid grid-cols-5 grid-rows-3 gap-y-2 relative">
 			{/* 01 */}
 			<p className="text-sm col-span-4 truncate" title={title} onClick={() => alert(title)}>
 				{title}
@@ -268,16 +284,27 @@ function Card({ schedule }: { schedule: any }) {
 			<p className="text-sm col-span-2 text-right">{time}</p>
 
 			{/* 03 */}
-			{/* <div className="text-sm col-span-1">
-				<Image className="ms-auto" src={flagSrc} alt={title} width={24} height={18} />
-			</div> */}
 			<LineAlertButton
 				alertId={alertId}
 				alertMeBefore={alertMeBefore}
 				alertMessage={alertMessage}
 				handleSetAlert={handleSetAlert}
 				disabled={loading}
+				status={status}
 			/>
+
+			{/* ribbon */}
+			{status === 'finished' && <FinishedRibbon />}
+		</div>
+	);
+}
+
+function FinishedRibbon() {
+	return (
+		<div className="absolute left-0 top-0 h-11 w-10 overflow-hidden">
+			<div className="bg-green-900 absolute transform -rotate-45 text-center text-white font-semibold text-[8px] py-1 left-[-26px] top-[4px] w-[80px]">
+				Finished
+			</div>
 		</div>
 	);
 }
