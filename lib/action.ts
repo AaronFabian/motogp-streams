@@ -1,7 +1,18 @@
+/*
+	Author: Aaron Fabian
+
+	action using use server to handle the next js backend.
+*/
+
 'use server';
 
 import { auth, signIn } from '@/lib/auth';
-import { registerIncomingMessage, unregisterIncomingMessage, updateIncomingMessage } from './data-service.ts';
+import {
+	findRequestedResult,
+	registerIncomingMessage,
+	unregisterIncomingMessage,
+	updateIncomingMessage,
+} from './data-service.ts';
 import {
 	getSchedulesInMonth as __getSchedulesInMonth,
 	getSchedulesPerDay,
@@ -27,8 +38,8 @@ export async function signInAction() {
 	await signIn('google', { redirectTo: '/account' });
 }
 
-export async function getSchedulesInMonth(year: number, month: number, order: number) {
-	const [data, _] = (await __getSchedulesInMonth(Number(year), Number(month), Number(order))) as any;
+export async function getSchedulesInMonth(year: number, month: number) {
+	const [data, _] = (await __getSchedulesInMonth(Number(year), Number(month))) as any;
 	return data.map((d: any) => d.day);
 }
 
@@ -93,6 +104,17 @@ export async function handleInsertingComment(params: any) {
 	const result = (await insertCommentHistory(params)) as any[];
 
 	return result[0];
+}
+
+export async function handleFindResult(title: string, category: string, session: string) {
+	try {
+		const result = await findRequestedResult(title, category, session);
+
+		return result;
+	} catch (error) {
+		console.error(error);
+		return [];
+	}
 }
 
 // export async function loginUser(formData: FormData) {

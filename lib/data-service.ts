@@ -1,5 +1,14 @@
+/*
+	Author: Aaron Fabian
+
+	data-service.ts handle all about mysql connection.
+	as possible this file only handle mysql not the logic 
+	also handle error when fetching
+*/
+
 import { connection } from '@/lib/db';
 import { Calendar } from '@/app/_components/AccountIncomingAlertList.tsx';
+import { ResultsPageParams } from '@/app/results/[year]/[month]/[order]/[title]/page.tsx';
 
 // wrap the connection.query function with Promise; .bind() make sure that
 // internal library 'this' is available otherwise can cause error or ambiguity
@@ -120,8 +129,7 @@ export async function createUserUsingGoogle(email: string, username: string) {
 
 export async function getAllMotoGPMonth() {
 	try {
-		const query =
-			'SELECT month, calendars.order FROM calendars WHERE calendars.year = 2024 GROUP BY month, calendars.order;';
+		const query = 'SELECT `month`, `order` FROM v_all_motogp_month_2024;';
 		const conn = await connection;
 		const [result, _] = await conn.query(query, []);
 
@@ -132,11 +140,11 @@ export async function getAllMotoGPMonth() {
 	}
 }
 
-export async function getSchedulesInMonth(year: number, month: number, order: number) {
+export async function getSchedulesInMonth(year: number, month: number) {
 	try {
-		const query = 'CALL get_schedules_in_month(?, ?, ?)';
+		const query = 'CALL get_schedules_in_month(?, ?)';
 		const conn = await connection;
-		const [result, _] = await conn.query(query, [year, month, order]);
+		const [result, _] = await conn.query(query, [year, month]);
 
 		return result;
 	} catch (error) {
@@ -190,10 +198,10 @@ export async function registerIncomingMessage(
 	const conn = await connection;
 
 	try {
-		const year = alertDate.getFullYear();
-		const month = alertDate.getMonth();
-		const day = alertDate.getDate();
-		const dateStr = `${year}-${month + 1}-${day} 00:00:00`;
+		// const year = alertDate.getFullYear();
+		// const month = alertDate.getMonth();
+		// const day = alertDate.getDate();
+		// const dateStr = `${year}-${month + 1}-${day} 00:00:00`;
 
 		// line UUID
 		// user id,
@@ -300,4 +308,41 @@ export async function insertCommentHistory(params: any) {
 		console.error('FATAL_ERROR insertCommentHistory ', error);
 		throw error;
 	}
+}
+
+export async function getRaceResult(params: ResultsPageParams) {
+	const year = Number(params.year);
+	const month = Number(params.month);
+	const order = Number(params.order);
+	const title = decodeURIComponent(params.title);
+
+	const query =
+		'SELECT category, `session` FROM results WHERE year = ? AND month = ? AND `order` = ? AND title = ? GROUP BY `session`, `category`;';
+	const conn = await connection;
+	const [result, _] = await conn.query(query, [year, month, order, title]);
+
+	return result as any[];
+}
+
+export interface EventResult {
+	id: number;
+	raider_name: string;
+	raider_number: number;
+	pos: number;
+	points: number;
+	team: string;
+	raider_image: string;
+	raider_country_flag_image: string;
+	time: string;
+	section: string;
+	session: string;
+}
+
+export async function findRequestedResult(title: string, category: string, session: string): Promise<EventResult[]> {
+	const conn = await connection;
+	const query = 'CALL find_result(?, ?, ?);';
+	const [result, _fieldPacket] = await conn.query(query, [title, category, session]);
+	const [data, _resultSetHeader] = result as any;
+
+	return data;
 }

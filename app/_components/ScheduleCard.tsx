@@ -2,9 +2,9 @@
 
 import { ClockIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
-import SetAlarmButton from './SetAlarmButton.tsx';
+import { convertTimeToLocale } from '@/app/_lib/utils.ts';
 import { MotoGPTodayStream } from '@/lib/data-service.ts';
-import { convertTimeToLocale } from '../_lib/utils.ts';
+import SetAlarmButton from './SetAlarmButton.tsx';
 
 export default function ScheduleCard({ stream }: { stream: MotoGPTodayStream }) {
 	const [localTime, setLocalTime] = useState('');

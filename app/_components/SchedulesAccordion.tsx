@@ -1,13 +1,25 @@
 'use client';
 
+import {
+	handleUserRequestSchedules,
+	registerAlert,
+	getSchedulesInMonth as service_getScheduleInMonth,
+	unregisterAlert,
+	updateAlert,
+} from '@/lib/action.ts';
 import { useState } from 'react';
+import {
+	BellAlertIcon,
+	ChevronDownIcon,
+	ClockIcon,
+	FlagIcon,
+	InformationCircleIcon,
+} from '@heroicons/react/24/outline';
 import { useUser } from '@/app/_providers/UserContext.tsx';
-import { handleUserRequestSchedules, registerAlert, unregisterAlert, updateAlert } from '@/lib/action.ts';
-import { BellAlertIcon, ChevronDownIcon, ClockIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
+import toast from 'react-hot-toast';
 import DayPicker from '@/app/_components/DayPicker.tsx';
 import LineAlertButton from '@/app/_components/LineAlertButton.tsx';
-import toast from 'react-hot-toast';
-import { getSchedulesInMonth as service_getScheduleInMonth } from '@/lib/action.ts';
+import Link from 'next/link';
 
 export default function SchedulesAccordion({
 	classList = '',
@@ -49,7 +61,7 @@ export default function SchedulesAccordion({
 			// 02 Get the data from request to server and check if there is no error
 			// const response = await fetch(`/api/get-schedule-in-month?year=${year}&month=${month}&order=${order}`)
 			// const { data } = await response.json();
-			const data = await service_getScheduleInMonth(year, month, order);
+			const data = await service_getScheduleInMonth(year, month);
 
 			// 03 End of loading and assign the data
 			setScheduleData(data);
@@ -94,7 +106,7 @@ export default function SchedulesAccordion({
 			<h6 className="mb-0">
 				<button
 					onClick={handleGetSchedulesPerDay}
-					className="relative flex items-center w-full p-4 font-semibold text-left transition-all ease-in cursor-pointer  rounded-t-1 group text-dark-500 focus:outline-none  duration-150"
+					className="relative flex items-center w-full p-4 font-semibold text-left transition-all ease-in cursor-pointer rounded-t-1 group text-dark-500 focus:outline-none  duration-150"
 					data-collapse-target="collapse-1"
 				>
 					<InformationCircleIcon className={`${state ? 'stroke-primary-gold-500' : ''} h-6 inline-block`} />
@@ -121,7 +133,7 @@ export default function SchedulesAccordion({
 				{currentDaySchedulesLoading && <LoadingSchedules />}
 				{currentDaySchedules?.length === 0 && <NoSchedulesAtThisDay />}
 				{!currentDaySchedulesLoading && currentDaySchedules && currentDaySchedules?.length > 0 && (
-					<CurrentDaySchedules currentDaySchedules={currentDaySchedules} />
+					<CurrentDaySchedules currentDaySchedules={currentDaySchedules} order={order} />
 				)}
 				{/* end of schedules UI */}
 			</div>
@@ -137,9 +149,16 @@ function LoadingCalendar() {
 	);
 }
 
-function CurrentDaySchedules({ currentDaySchedules }: { currentDaySchedules: any[] }) {
+function CurrentDaySchedules({ currentDaySchedules, order }: { currentDaySchedules: any[]; order: number }) {
+	const scheduleRef = currentDaySchedules[0];
+	const year: number = scheduleRef.year;
+	const month: number = scheduleRef.month;
+	const title: string = scheduleRef.title;
+
 	return (
 		<div className="p-2 flex flex-col gap-y-1.5">
+			<NavToResultPage key={year} year={year} month={month} order={order} title={title} />
+
 			{currentDaySchedules!.map((schedule: any) => (
 				<Card key={schedule.id} schedule={schedule} />
 			))}
@@ -284,14 +303,16 @@ function Card({ schedule }: { schedule: any }) {
 			<p className="text-sm col-span-2 text-right">{time}</p>
 
 			{/* 03 */}
-			<LineAlertButton
-				alertId={alertId}
-				alertMeBefore={alertMeBefore}
-				alertMessage={alertMessage}
-				handleSetAlert={handleSetAlert}
-				disabled={loading}
-				status={status}
-			/>
+			{status !== 'finished' && (
+				<LineAlertButton
+					alertId={alertId}
+					alertMeBefore={alertMeBefore}
+					alertMessage={alertMessage}
+					handleSetAlert={handleSetAlert}
+					disabled={loading}
+					status={status}
+				/>
+			)}
 
 			{/* ribbon */}
 			{status === 'finished' && <FinishedRibbon />}
@@ -299,12 +320,26 @@ function Card({ schedule }: { schedule: any }) {
 	);
 }
 
+function NavToResultPage({ year, month, order, title }: { year: number; month: number; order: number; title: string }) {
+	return (
+		<Link
+			href={`/results/${year}/${month}/${order}/${title}`}
+			className="col-span-5 self-center text-sm rounded-md bg-primary-gray-500 mb-2 -mt-2 place-self-center active:bg-dim-white hover:bg-dim-gold"
+		>
+			<p className="text-center px-8 py-0.5">
+				view result
+				<FlagIcon className="w-4 inline-block ml-2" />
+			</p>
+		</Link>
+	);
+}
+
 function FinishedRibbon() {
 	return (
 		<div className="absolute left-0 top-0 h-11 w-10 overflow-hidden">
-			<div className="bg-green-900 absolute transform -rotate-45 text-center text-white font-semibold text-[8px] py-1 left-[-26px] top-[4px] w-[80px]">
+			<p className="bg-green-900 absolute transform -rotate-45 text-center text-white font-semibold text-[8px] py-1 left-[-26px] top-[4px] w-[80px]">
 				Finished
-			</div>
+			</p>
 		</div>
 	);
 }

@@ -11,7 +11,7 @@ export const revalidate = 60 * 60 * 24 * 7;
 export default async function page() {
 	const motoGPCalendars = (await getAllMotoGPMonth()) as any;
 
-	if (!motoGPCalendars) return <p>Something gone wrong Or no data at the current</p>;
+	if (!motoGPCalendars) return <p>Something gone wrong or no data at the current</p>;
 
 	return motoGPCalendars.map((calendar: any, i: number) => (
 		<SchedulesAccordion
