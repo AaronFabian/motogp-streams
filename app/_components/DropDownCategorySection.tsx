@@ -58,6 +58,8 @@ export default function DropDownCategorySection({
 
 	return (
 		<>
+			<h1 className="text-xl px-2 pt-2 font-semibold">{title}</h1>
+
 			<form className="p-2 w-full grid grid-cols-2 grid-rows-[1rem_2.6rem] grid-flow-col gap-2">
 				{/* 01 */}
 				<label htmlFor="countries" className="block mb-2 text-sm font-medium text-white">

@@ -22,8 +22,8 @@ export default function RaiderResults({ data }: { data: EventResult[] }) {
 	const finishedRiders = categorizedResults.get('finished')?.length;
 
 	return (
-		<table className="w-full relative">
-			<caption>
+		<table className="w-full relative pb-8">
+			<caption className="text-xs">
 				Total Rider finished : {finishedRiders} from {data.length}
 			</caption>
 			<thead>
@@ -102,7 +102,9 @@ function RiderCard({ eventResult }: { eventResult: EventResult }) {
 
 			{/* 04 */}
 			<td>
-				<span className="block text-primary-white-500 text-xs">{eventResult.raider_name}</span>
+				<span className="block text-primary-white-500 text-xs">
+					{eventResult.raider_name} {eventResult.raider_number}
+				</span>
 				<span className="text-primary-white-800 text-xs">{eventResult.team}</span>
 			</td>
 
@@ -110,11 +112,11 @@ function RiderCard({ eventResult }: { eventResult: EventResult }) {
 			<td>
 				<Image
 					src={eventResult.raider_country_flag_image}
-					alt={eventResult.raider_name + "country's flag"}
+					alt={eventResult.raider_name + " country's flag"}
 					width={64}
 					height={64}
 					className="absolute left-0 top-0 h-full w-auto -z-10 opacity-25"
-					priority
+					quality={10}
 				/>
 			</td>
 
