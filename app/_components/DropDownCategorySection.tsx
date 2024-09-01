@@ -58,7 +58,7 @@ export default function DropDownCategorySection({
 
 	return (
 		<>
-			<form className="max-w-sm mx-auto grid grid-cols-2 grid-rows-[1rem_2.6rem] grid-flow-col gap-2">
+			<form className="p-2 w-full grid grid-cols-2 grid-rows-[1rem_2.6rem] grid-flow-col gap-2">
 				{/* 01 */}
 				<label htmlFor="countries" className="block mb-2 text-sm font-medium text-white">
 					Category

@@ -23,10 +23,17 @@ const config: Config = {
 					},
 					white: {
 						500: '#fefefe',
+						800: '#bdbdbd',
 					},
 					gray: {
 						500: '#303036',
 						800: '#242424',
+					},
+					silver: {
+						500: '#878787',
+					},
+					bronze: {
+						500: '#CD7F32',
 					},
 				},
 				dim: {

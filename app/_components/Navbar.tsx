@@ -50,7 +50,7 @@ export default function Navbar({ user }: { user: User | null }) {
 	return (
 		<>
 			<div className="h-[52px]"></div>
-			<div className="h-[52px] fixed top-0 right-0 z-10 bg-primary-gray-800 w-full py-1 px-2 flex justify-between items-center">
+			<div className="h-[52px] fixed top-0 right-0 z-20 bg-primary-gray-800 w-full py-1 px-2 flex justify-between items-center">
 				<a
 					href="#"
 					className="flex items-center text-sm my-auto h-full font-semibold text-gray-900 dark:text-primary-white-500"

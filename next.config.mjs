@@ -14,6 +14,18 @@ const nextConfig = {
 				port: '',
 				pathname: 'https://scdn.line-apps.com',
 			},
+			{
+				protocol: 'https',
+				hostname: 'resources.motogp.pulselive.com',
+				port: '',
+				pathname: '/**',
+			},
+			{
+				protocol: 'https',
+				hostname: 'static-files.motogp.pulselive.com',
+				port: '',
+				pathname: '/**',
+			},
 		],
 	},
 };
