@@ -110,13 +110,10 @@ function RiderCard({ eventResult }: { eventResult: EventResult }) {
 
 			{/* 05 */}
 			<td>
-				<Image
+				<img
 					src={eventResult.raider_country_flag_image}
 					alt={eventResult.raider_name + " country's flag"}
-					width={64}
-					height={64}
 					className="absolute left-0 top-0 h-full w-auto z-0 opacity-25"
-					quality={10}
 				/>
 			</td>
 
