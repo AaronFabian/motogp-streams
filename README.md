@@ -1,4 +1,4 @@
-# Orange Juice
+# MotoGP Streams
 
 A MotoGP companion app.
 
