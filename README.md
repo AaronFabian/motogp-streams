@@ -23,23 +23,23 @@ https://motogp-streams.xyz
 
 | Main Page                                         |
 | ------------------------------------------------- |
-| ![login page](public/web-pages/main.png) |
+| ![main page](public/web-pages/main.png) |
 
-| Login Page                                         |
+| Signin Page                                         |
 | -------------------------------------------------- |
-| ![login page](public/web-pages/signin.png) |
+| ![signin page](public/web-pages/signin.png) |
 
 | Account Page                                         |
 | ----------------------------------------------------- |
-| ![login page](public/web-pages/account.png) |
+| ![account page](public/web-pages/account.png) |
 
 | Results Page                                     |
 | -------------------------------------------------- |
-| ![login page](public/web-pages/results.png) |
+| ![results page](public/web-pages/results.png) |
 
 | Schedules Page                           |
 | ---------------------------------------------------------- |
-| ![login page](public/schedules/watch_page_comment.png) |
+| ![schedules page](public/web-pages/schedules.png) |
 
 ## Installation
 
