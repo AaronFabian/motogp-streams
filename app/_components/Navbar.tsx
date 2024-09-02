@@ -19,7 +19,7 @@ const navLinks = [
 		name: 'Login',
 		href: '/login',
 		protected: false,
-		icon: <ArrowLeftEndOnRectangleIcon className="m-2" />,
+		icon: <ArrowLeftEndOnRectangleIcon className="m-2 hover:stroke-primary-gold-500 transition-all duration-150" />,
 	},
 	{
 		name: 'Notification',
