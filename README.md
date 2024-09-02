@@ -1,6 +1,6 @@
 # MotoGP Streams
 
-A MotoGP companion app.
+Get real-time notifications for your favorite MotoGP events directly through the Line Messenger app. Never miss a race again with our seamless integration—simply register, and we’ll keep you updated with all the action. Enjoy a personalized MotoGP experience with instant alerts and reminders!
 
 ## Techologies
 
